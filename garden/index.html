@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#151713">
 <title>I gave an agent a lakehouse and control of my garden · Javier de la Torre</title>
 <meta name="description" content="Or how to produce a €60 lettuce. Eleven sensors, a camera, an old phone and an agent that waters two square metres of vegetables, and what it says about where IoT is going.">
 <meta name="author" content="Javier de la Torre">
@@ -18,61 +20,186 @@
 <meta property="article:published_time" content="2026-11-05">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥬</text></svg>">
+<link rel="preload" href="fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+@font-face { font-family: "Newsreader"; src: url(fonts/newsreader.woff2) format("woff2");
+  font-style: normal; font-weight: 400 700; font-display: swap; }
+@font-face { font-family: "Newsreader"; src: url(fonts/newsreader-italic.woff2) format("woff2");
+  font-style: italic; font-weight: 400 600; font-display: swap; }
+
 :root {
-  --bg: #fbf9f4; --ink: #1d1c19; --muted: #6b675e; --rule: #e4ded2; --card: #ffffff;
-  --accent: #3f7d3a; --code-bg: #f1ede4; --pre-bg: #22241f; --pre-ink: #e8e6df;
-}
-@media (max-width: 640px) { body { font-size: 18.5px; } main { padding: 40px 18px 80px; } h2 { font-size: 26px; } }
-@media (prefers-color-scheme: dark) {
-  :root { --bg: #161714; --ink: #e9e6de; --muted: #a29d92; --rule: #34342e; --card: #1f201c;
-          --accent: #8cc47f; --code-bg: #2a2b26; --pre-bg: #0f100d; --pre-ink: #e8e6df; }
+  --bg: #151713; --ink: #f0ece3; --muted: #aca99f; --faint: #8a877e; --accent: #a4c88a;
+  --rule: #353a32; --code-bg: #1e221d; --panel: #191c17;
+  --serif: "Newsreader", "Iowan Old Style", Charter, Georgia, serif;
+  --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  --col: 700px; --mid: 860px; --wide: 1080px; --full: 1200px; --gut: 24px;
 }
 * { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
+html { -webkit-text-size-adjust: 100%; background: var(--bg); }
 body { margin: 0; background: var(--bg); color: var(--ink);
-  font: 20px/1.7 Charter, "Bitstream Charter", "Iowan Old Style", Georgia, Cambria, serif; }
-main { max-width: 1120px; margin: 0 auto; padding: 64px 24px 110px; }
-/* reading column 760px; pictures, tables and the prompt cards break out wider */
-article > *, footer { max-width: 760px; margin-left: auto; margin-right: auto; }
-article > figure:not(.narrow), article > .table-wrap, header.top .hero { max-width: 1040px; }
-article > .ask, article > pre { max-width: 860px; }
-header.top { margin-bottom: 40px; }
-.kicker { font: 600 12px/1.4 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; letter-spacing: .14em;
-  text-transform: uppercase; color: var(--accent); margin: 0 0 14px; }
-h1 { font-size: clamp(36px, 6vw, 56px); line-height: 1.08; letter-spacing: -.02em; margin: 0 0 14px; font-weight: 700; }
-.dek { font-size: 22px; line-height: 1.4; color: var(--muted); font-style: italic; margin: 0 0 22px; }
-.byline { font: 15px/1.4 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--muted); margin: 0; }
-header.top { max-width: none; }
-header.top > :not(.hero) { max-width: 760px; margin-left: auto; margin-right: auto; }
-.hero { margin: 40px auto 8px; }
-.hero img { width: 100%; height: auto; display: block; border-radius: 6px; }
-h2 { font-size: 30px; line-height: 1.2; letter-spacing: -.01em; margin: 64px auto 16px; }
-p, ul, ol { margin: 0 auto 22px; }
-li { margin: 0 0 6px; }
-a { color: var(--accent); text-underline-offset: 3px; }
-strong { font-weight: 700; }
-code { font: .82em ui-monospace, "SF Mono", Menlo, Consolas, monospace; background: var(--code-bg); padding: .12em .35em; border-radius: 4px; }
-pre { background: var(--pre-bg); color: var(--pre-ink); padding: 16px 18px; border-radius: 8px; overflow-x: auto; margin: 0 0 22px;
-  font: 13.5px/1.55 ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
-pre code { background: none; padding: 0; font-size: inherit; color: inherit; }
-figure { margin: 40px auto 44px; }
-figure img { display: block; width: 100%; height: auto; border-radius: 6px; }
-figure.narrow img { max-width: 340px; margin: 0 auto; }
-figcaption { font: 14.5px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--muted); margin: 10px 0 0; text-align: center; }
-.ask { box-sizing: border-box; background: var(--card); border: 1px solid var(--rule); border-left: 3px solid var(--accent); border-radius: 6px;
-  padding: 18px 20px 4px; margin: 34px auto 38px; }
-.ask .label { font: 600 11px/1.4 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; letter-spacing: .14em;
-  text-transform: uppercase; color: var(--accent); margin: 0 0 8px; }
-.ask p { font-size: 17.5px; }
-.ask pre { margin-bottom: 18px; }
-.table-wrap { overflow-x: auto; margin: 8px auto 30px; }
-table { border-collapse: collapse; width: 100%; font: 15px/1.45 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
-th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
-th { font-weight: 600; color: var(--muted); }
-td code { font-size: .85em; white-space: nowrap; }
-footer { border-top: 1px solid var(--rule); margin-top: 64px; padding-top: 22px;
-  font: 15px/1.6 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--muted); }
+  font: 400 21px/1.66 var(--serif); font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+::selection { background: #a4c88a44; }
+main { padding: 72px var(--gut) 120px; }
+
+/* the three widths: reading column, wide media, full-bleed photograph */
+article > *, footer { max-width: var(--col); margin-left: auto; margin-right: auto; }
+article > .mid, article > .ask, article > pre, article > .table-wrap { max-width: var(--mid); }
+article > .wide, article > .split, article > .pair, article > .loop { max-width: var(--wide); }
+article > .full { max-width: var(--full); }
+
+/* opening */
+header.top { max-width: var(--wide); margin-bottom: 8px; }
+header.top > .kicker, header.top > h1, header.top > .dek, header.top > .byline { max-width: var(--mid); margin-left: auto; margin-right: auto; }
+.kicker { font: 600 12.5px/1.4 var(--sans); letter-spacing: .16em; text-transform: uppercase; color: var(--accent); margin-bottom: 18px; }
+h1 { font-weight: 600; font-size: clamp(40px, 7vw, 76px); line-height: 1.02; letter-spacing: -.022em; margin: 0 auto 18px;
+  text-wrap: balance; font-variation-settings: "opsz" 72; }
+.dek { font-style: italic; font-size: clamp(22px, 2.6vw, 28px); line-height: 1.35; color: var(--muted); margin: 0 auto 26px; }
+.byline { font: 14.5px/1.4 var(--sans); color: var(--muted); margin: 0 auto; }
+.byline span { color: var(--faint); margin: 0 .5em; }
+header.top .pair { margin-top: 48px; }
+
+p, ul, ol { margin: 0 auto 1.15em; }
+ul { padding-left: 1.2em; }
+li { margin: 0 0 .4em; }
+li::marker { color: var(--accent); }
+strong { font-weight: 650; }
+em { font-style: italic; }
+a { color: var(--ink); text-decoration: underline; text-decoration-color: #a4c88a99; text-decoration-thickness: 1px; text-underline-offset: .2em; }
+a:hover { color: var(--accent); text-decoration-color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+
+/* the mid-life sentence */
+.opener { font-style: italic; font-size: clamp(26px, 3.2vw, 34px); line-height: 1.3; letter-spacing: -.005em;
+  border-left: 2px solid var(--accent); padding: 4px 0 4px 26px; margin: 64px auto 36px; max-width: var(--col); }
+
+/* sections */
+article { counter-reset: sec; }
+h2 { counter-increment: sec; font-weight: 600; font-size: clamp(28px, 3.4vw, 36px); line-height: 1.15; letter-spacing: -.012em;
+  margin: 96px auto 26px; padding-top: 34px; border-top: 1px solid var(--rule); text-wrap: balance; font-variation-settings: "opsz" 48; }
+h2::before { content: counter(sec, decimal-leading-zero) " /"; display: block; font: 500 13px/1 var(--mono);
+  letter-spacing: .06em; color: var(--accent); margin-bottom: 16px; }
+
+/* code */
+code { font: .8em/1 var(--mono); background: var(--code-bg); border: 1px solid #2a2f28; padding: .14em .38em; border-radius: 4px; color: #e6e2d8; }
+pre { background: var(--code-bg); border: 1px solid #2a2f28; border-radius: 8px; padding: 18px 20px; overflow-x: auto;
+  font: 14px/1.6 var(--mono); color: #e6e2d8; margin: 30px auto 34px; tab-size: 2; }
+pre code { background: none; border: 0; padding: 0; font: inherit; }
+
+/* agent prompts: understated quotation panels */
+.ask { border-left: 2px solid var(--accent); background: linear-gradient(90deg, #a4c88a0d, transparent 70%);
+  padding: 20px 0 6px 26px; margin: 44px auto 48px; }
+.ask .label { font: 600 11.5px/1.4 var(--sans); letter-spacing: .16em; text-transform: uppercase; color: var(--accent); margin: 0 0 12px; }
+.ask p { font-style: italic; font-size: 21px; line-height: 1.55; color: #e9e4d9; max-width: var(--col); margin-left: 0; }
+.ask p em { font-style: italic; }
+.ask pre { margin: 20px 0 18px; }
+
+/* figures */
+figure { margin: 48px auto 52px; }
+figure img { display: block; width: 100%; height: auto; border-radius: 4px; background: #1b1e19; }
+figure.shot img { border: 1px solid var(--rule); border-radius: 6px; }
+figure.portrait img { max-width: 420px; margin: 0 auto; }
+figure.phone img { max-width: 340px; margin: 0 auto; }
+figcaption, .caption { font: 14px/1.5 var(--sans); color: var(--muted); margin: 12px auto 0; max-width: var(--col); text-align: center; text-wrap: pretty; }
+figure.full { margin: 64px auto 56px; }
+figure.full img { border-radius: 3px; }
+a.zoom { display: block; cursor: zoom-in; border-radius: 4px; }
+
+/* justified rows: each item grows by its aspect ratio, so heights match */
+.row { display: flex; gap: 12px; align-items: flex-start; }
+.row + .row { margin-top: 12px; }
+.row > * { flex: var(--r) 1 0; min-width: 0; margin: 0; }
+.pair { margin: 56px auto 56px; }
+.pair figure { margin: 0; }
+.pair figure figcaption { text-align: left; margin-top: 10px; }
+.pair > figcaption { margin-top: 16px; }
+.grid { margin: 52px auto; }
+.grid .rows { display: flex; gap: 12px; align-items: flex-start; }
+.grid .rows > .row { display: contents; }
+@media (max-width: 760px) { .grid .rows { display: block; } .grid .rows > .row { display: flex; } }
+
+/* text beside a picture */
+.split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 56px; align-items: center; margin: 56px auto; }
+.split.map { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+.split.phone-r, .split.phone-l { grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); }
+.split.phone-l { grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); }
+.split.phone-l > figure { order: -1; }
+.split.phone-l.email { grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: 48px; }
+.split > figure { margin: 0; }
+.split .text > :last-child { margin-bottom: 0; }
+.split .text p { margin-left: 0; }
+.split figcaption { text-align: left; }
+
+/* tables */
+.table-wrap { overflow-x: auto; margin: 32px auto 40px; border-top: 1px solid var(--rule); -webkit-overflow-scrolling: touch; }
+table { border-collapse: collapse; width: 100%; font: 14.5px/1.5 var(--sans); }
+th, td { text-align: left; padding: 11px 14px 11px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-weight: 600; font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+td { color: #dcd8ce; }
+td code { white-space: nowrap; font-size: .9em; }
+td:first-child { padding-left: 0; }
+
+/* the loop diagram */
+.loop { margin: 52px auto 60px; }
+.loop ol { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 28px; counter-reset: step; }
+.loop li { position: relative; margin: 0; padding: 18px 18px 18px; border: 1px solid var(--rule); background: var(--panel); border-radius: 6px;
+  font: 13.5px/1.5 var(--sans); color: var(--muted); }
+.loop li + li::before { content: ""; position: absolute; left: -28px; top: 34px; width: 28px; height: 1px; background: var(--accent); }
+.loop li + li::after { content: ""; position: absolute; left: -7px; top: 30px; border: 4.5px solid transparent; border-left: 6px solid var(--accent); }
+.loop .step { display: block; font: 500 11px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+.loop .what { display: block; font: 600 17px/1.3 var(--serif); color: var(--ink); margin-bottom: 8px; }
+.loop .how { display: block; font-size: 12.5px; color: var(--faint); margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--rule); }
+.loop .warn { display: block; margin-top: 10px; color: #d9c27a; font-size: 12.5px; }
+.loop .back { display: flex; align-items: center; gap: 12px; margin-top: 18px; font: 13px/1.4 var(--sans); color: var(--muted); }
+.loop .back svg { flex: 1 1 auto; height: 22px; min-width: 40px; }
+.loop figcaption { margin-top: 16px; }
+
+footer { border-top: 1px solid var(--rule); margin-top: 88px; padding-top: 24px; font: 14.5px/1.6 var(--sans); color: var(--muted); }
+footer a { color: var(--muted); }
+
+/* full-size viewer */
+dialog.viewer { border: 0; padding: 0; background: transparent; max-width: 96vw; max-height: 96vh; }
+dialog.viewer::backdrop { background: rgba(8, 9, 7, .92); }
+dialog.viewer img { display: block; max-width: 96vw; max-height: 92vh; width: auto; height: auto; border-radius: 4px; cursor: zoom-out; }
+dialog.viewer button { position: fixed; top: 14px; right: 16px; font: 600 13px/1 var(--sans); color: var(--ink); background: #232720;
+  border: 1px solid var(--rule); border-radius: 999px; padding: 9px 14px; cursor: pointer; }
+
+@media (max-width: 1100px) {
+  .loop ol { grid-template-columns: 1fr; }
+  .loop ol { gap: 26px; }
+  .loop li + li::before { left: 34px; top: -26px; width: 1px; height: 26px; }
+  .loop li + li::after { left: 30px; top: -7px; border: 4.5px solid transparent; border-top: 6px solid var(--accent); }
+  .loop ol { max-width: var(--col); margin: 0 auto; }
+  .loop .back { max-width: var(--col); margin-left: auto; margin-right: auto; }
+}
+@media (max-width: 900px) {
+  .split, .split.map, .split.phone-r, .split.phone-l { grid-template-columns: 1fr; gap: 28px; max-width: var(--col); }
+  .split.phone-l > figure { order: 0; }
+  .split > figure img { max-width: 420px; margin: 0 auto; }
+  .split.map > figure img { max-width: none; }
+  .split.phone-r > figure img, .split.phone-l > figure img { max-width: 320px; }
+  .split.email > figure img { max-width: none; }
+  .split figcaption { text-align: center; }
+}
+@media (max-width: 640px) {
+  :root { --gut: 18px; }
+  body { font-size: 18.5px; line-height: 1.64; }
+  main { padding-top: 44px; }
+  h2 { margin-top: 72px; }
+  .pair.stack .row { flex-direction: column; }
+  .pair.stack .row > * { flex: none; width: 100%; }
+  .row { gap: 8px; } .row + .row { margin-top: 8px; }
+  .ask { padding-left: 18px; }
+  .ask p { font-size: 19px; }
+  pre { font-size: 12.5px; padding: 14px 15px; margin-left: calc(-1 * var(--gut) + 6px); margin-right: calc(-1 * var(--gut) + 6px); }
+  .opener { padding-left: 18px; margin-top: 44px; }
+  figure.full { margin-left: calc(-1 * var(--gut)); margin-right: calc(-1 * var(--gut)); }
+  figure.full img { border-radius: 0; }
+  figure.full figcaption { padding: 0 var(--gut); }
+}
+@media (prefers-reduced-motion: no-preference) { a { transition: color .15s, text-decoration-color .15s; } }
+@media print { body { background: #fff; color: #111; } a.zoom { cursor: auto; } }
 </style>
 </head>
 <body>
@@ -82,18 +209,25 @@ footer { border-top: 1px solid var(--rule); margin-top: 64px; padding-top: 22px;
 <p class="kicker">A garden story</p>
 <h1>I gave an agent a lakehouse and control of my garden</h1>
 <p class="dek">Or how to produce a €60 lettuce.</p>
-<p class="byline">Javier de la Torre · 5 November 2026</p>
-<figure class="hero"><img src="img/plan-and-bed.webp" alt="On the left, an illustrated plan for a three-metre raised vegetable bed; on the right, the real bed planted with young cabbage, broccoli and lettuce along a brick wall." width="1400" height="1005"><figcaption>From the agent-assisted plan to the actual two-square-metre garden.</figcaption></figure>
+<p class="byline">Javier de la Torre<span>·</span><time datetime="2026-11-05">5 November 2026</time></p>
+<figure class="pair">
+<div class="row">
+<figure style="--r:.6994"><a class="zoom" href="img/plan.webp" aria-label="Open image full size"><img src="img/plan.webp" alt="The illustrated plan for a three-metre raised vegetable bed (in Spanish): dimensions 300 × 40 × 40 cm, a side section, a shopping list and the assembly steps." width="740" height="1058" fetchpriority="high"></a></figure>
+<figure style="--r:.7502"><a class="zoom" href="img/bed-first.webp" aria-label="Open image full size"><img src="img/bed-first.webp" alt="The real bed, built: a narrow raised bed along a brick wall and a reed fence, planted with young cabbage, broccoli and lettuce over a drip line." width="760" height="1013" fetchpriority="high"></a></figure>
+</div>
+<figcaption>From the agent-assisted plan to the actual two-square-metre garden.</figcaption>
+</figure>
 </header>
-<p>I guess this is what a mid-life crisis looks like.</p>
+<p class="opener">I guess this is what a mid-life crisis looks like.</p>
+
 <p>I started gardening.</p>
 <p>Nothing serious. I have a small garden at home, and I carved out about two square metres on one side to grow some vegetables. I love seeing things grow and, if I can eat them afterwards, even better. I also thought it would be a nice thing to do with the kids.</p>
 <p>Although, as I would later discover, the kids were interested for approximately two hours.</p>
-<p>This is not an impressive vegetable garden. We're talking about a narrow raised bed with cabbage, broccoli, lettuce and spinach: the usual things you plant going into winter.</p>
+<p>This is not an impressive vegetable garden. We’re talking about a narrow raised bed with cabbage, broccoli, lettuce and spinach: the usual things you plant going into winter.</p>
 <p>And how did I decide what to plant? Obviously, I asked Claude.</p>
 <p>How deep should the bed be? Claude. What soil should I buy? Claude. How far apart should the broccoli go? Claude. How much should I water it? You get the idea.</p>
 <figure>
-<img src="img/measuring-the-strip.webp" alt="A phone's measuring app showing 3.02 metres along a strip of lawn next to a brick edge and a reed fence." width="782" height="359" loading="lazy">
+<a class="zoom" href="img/measuring-the-strip.webp" aria-label="Open image full size"><img src="img/measuring-the-strip.webp" alt="A phone's measuring app showing 3.02 metres along a strip of lawn next to a brick edge and a reed fence." width="782" height="359" loading="lazy"></a>
 <figcaption>Step zero: the strip available for the bed measured just over three metres.</figcaption>
 </figure>
 
@@ -103,42 +237,61 @@ footer { border-top: 1px solid var(--rule); margin-top: 64px; padding-top: 22px;
 <p>I could follow a generic schedule (ten minutes every second day, or whatever), but that seemed a bit stupid. Why not measure the moisture in the soil?</p>
 <p>So I bought a soil-moisture sensor. Then I thought: what about the water that appears overnight as dew? Leaf-wetness sensor. Temperature? Sensor. Rainfall? Sensor. Solar radiation? Sensor. Wind? Sure, why not.</p>
 <p>A few clicks later I had accidentally built a fully instrumented vegetable garden.</p>
-<figure>
-<img src="img/sensors.webp" alt="The weather station array, the Ecowitt gateway and several soil probes, some laid out on a table and some installed in the raised bed and the lawn." width="1200" height="925" loading="lazy">
+<figure class="wide grid">
+<div class="rows">
+<div class="row">
+<figure style="--r:.7492"><a class="zoom" href="img/sensor-station.webp" aria-label="Open image full size"><img src="img/sensor-station.webp" alt="The weather station array, the gateway and five soil probes laid out on a rug before installation." width="487" height="650" loading="lazy"></a></figure>
+<figure style="--r:.46"><a class="zoom" href="img/sensor-app.webp" aria-label="Open image full size"><img src="img/sensor-app.webp" alt="The Ecowitt app's sensor list, with the first soil channels registered and the rest still learning." width="299" height="650" loading="lazy"></a></figure>
+</div>
+<div class="row">
+<figure style="--r:1.3339"><a class="zoom" href="img/sensor-probe-bed.webp" aria-label="Open image full size"><img src="img/sensor-probe-bed.webp" alt="A green soil probe pushed into the raised bed next to the drip line and a young plant." width="827" height="620" loading="lazy"></a></figure>
+<figure style="--r:1.3339"><a class="zoom" href="img/sensor-probe-lawn.webp" aria-label="Open image full size"><img src="img/sensor-probe-lawn.webp" alt="A green soil probe in the lawn, beside a wooden fence." width="827" height="620" loading="lazy"></a></figure>
+</div>
+</div>
 <figcaption>The sensor pile became real quickly: the weather station, the gateway and soil probes in both the bed and the lawn.</figcaption>
 </figure>
 
-<p>I went with Ecowitt. The sensors are inexpensive and battery powered, and they all talk wirelessly to a small gateway connected to the internet. Installation is ridiculously easy: put the batteries in, push them into the ground, and they show up on the gateway. Today there are eleven: eight soil probes, a weather station, a leaf-wetness sensor and the gateway's own indoor sensor.</p>
+<p>I went with Ecowitt. The sensors are inexpensive and battery powered, and they all talk wirelessly to a small gateway connected to the internet. Installation is ridiculously easy: put the batteries in, push them into the ground, and they show up on the gateway. Today there are eleven: eight soil probes, a weather station, a leaf-wetness sensor and the gateway’s own indoor sensor.</p>
 <p>In total I spent something like €300 on sensors for a vegetable garden that, if everything goes perfectly, might one day produce €40 worth of vegetables. We were already approaching the €60-lettuce phase of the project.</p>
 <p>Suddenly I could measure my garden better than many factories measure their production lines.</p>
 <h2 id="of-course-i-mapped-the-whole-thing">Of course I mapped the whole thing</h2>
-<p>I am also a map geek, so there was no chance I was going to leave the sensors as "probe 1", "probe 2" and "somewhere by the fence". I opened Google Earth and pinned every soil probe, sprinkler, valve box, the weather station and the camera. Those positions went into a table, <code>garden.sensor_placements</code>, next to the readings.</p>
-<figure class="narrow">
-<img src="img/sensor-map.webp" alt="An aerial view of the lawn with pins for each soil probe, sprinkler, the water valves, the camera and the weather station; the raised bed is a thin red outline along the left edge." width="704" height="741" loading="lazy">
+<div class="split map">
+<div class="text">
+
+<p>I am also a map geek, so there was no chance I was going to leave the sensors as “probe 1”, “probe 2” and “somewhere by the fence”. I opened Google Earth and pinned every soil probe, sprinkler, valve box, the weather station and the camera. Those positions went into a table, <code>garden.sensor_placements</code>, next to the readings.</p>
+</div>
+<figure>
+<a class="zoom" href="img/sensor-map.webp" aria-label="Open image full size"><img src="img/sensor-map.webp" alt="An aerial view of the lawn with pins for each soil probe, sprinkler, the water valves, the camera and the weather station; the raised bed is a thin red outline along the left edge." width="704" height="741" loading="lazy"></a>
 <figcaption>Every sensor, sprinkler and valve box, pinned. The raised bed is the thin red outline on the left.</figcaption>
 </figure>
+</div>
 
-<p>That immediately makes the questions more interesting. Instead of asking "what is soil-ch6 doing?", I can ask why the north-west corner of the lawn is always wetter, or which end of the bed dries fastest. Every measurement has a real position, so the agent can reason about the garden in space as well as in time.</p>
+<p>That immediately makes the questions more interesting. Instead of asking “what is soil-ch6 doing?”, I can ask why the north-west corner of the lawn is always wetter, or which end of the bed dries fastest. Every measurement has a real position, so the agent can reason about the garden in space as well as in time.</p>
 <p>And this is where I become completely unreasonable. There is probably nothing I would enjoy more than a live moisture surface across my own lawn: a little gradient from dry to wet, showing what is happening between the probes. Eight probes are obviously not enough to know the moisture at every centimetre, but they are enough to start seeing patterns, test some interpolation and tell me where the next probe should go. Completely unnecessary. Obviously essential.</p>
-<p>But there was still one big problem. I couldn't see it.</p>
+<p>But there was still one big problem. I couldn’t see it.</p>
 <h2 id="so-naturally-i-installed-a-camera">So, naturally, I installed a camera</h2>
+<div class="split">
+<div class="text">
+
 <p>I travel quite a bit. Who was going to tell me whether the plants looked healthy? Certainly not my children.</p>
-<figure class="narrow">
-<img src="img/camera.webp" alt="A white Reolink security camera on the wall, looking down at the raised bed of broccoli, cabbage and lettuce with the drip line around it." width="900" height="1200" loading="lazy" style="max-width:520px">
+<p>Now I can watch my two-square-metre farm in glorious 4K, 24 hours a day. Including at night.</p>
+<p>Which has already produced one important analytical insight: my neighbour’s cat likes to use the vegetable bed as a toilet.</p>
+<p>Agent-driven agriculture was already paying dividends.</p>
+</div>
+<figure>
+<a class="zoom" href="img/camera.webp" aria-label="Open image full size"><img src="img/camera.webp" alt="A white Reolink security camera on the wall, looking down at the raised bed of broccoli, cabbage and lettuce with the drip line around it." width="900" height="1200" loading="lazy"></a>
 <figcaption>An ordinary Reolink security camera, pointed at two square metres of vegetables.</figcaption>
 </figure>
+</div>
 
-<p>Now I can watch my two-square-metre farm in glorious 4K, 24 hours a day. Including at night.</p>
-<p>Which has already produced one important analytical insight: my neighbour's cat likes to use the vegetable bed as a toilet.</p>
-<p>Agent-driven agriculture was already paying dividends.</p>
 <h2 id="now-i-had-data-a-lot-of-data">Now I had data. A lot of data.</h2>
 <p>At this point I had soil moisture, soil temperature, conductivity, leaf wetness, air temperature and humidity, rain, wind, solar radiation, and pictures of the garden.</p>
 <p>Great. But now I had another problem: what do I actually do with all of it?</p>
-<p>Is 34 % soil moisture good? How quickly is the soil drying? Did yesterday's watering make any difference? Is the broccoli getting bigger? Should I water today if it might rain tomorrow?</p>
-<p>And because I am a data nerd, this time I didn't ask. I already knew the answer: my vegetable garden needed a lakehouse.</p>
+<p>Is 34 % soil moisture good? How quickly is the soil drying? Did yesterday’s watering make any difference? Is the broccoli getting bigger? Should I water today if it might rain tomorrow?</p>
+<p>And because I am a data nerd, this time I didn’t ask. I already knew the answer: my vegetable garden needed a lakehouse.</p>
 <h2 id="getting-the-data-out-of-the-garden">Getting the data out of the garden</h2>
-<p>The measurements were sitting inside the Ecowitt app, which wasn't going to help an agent very much. I needed somewhere for the data to accumulate, somewhere an agent could query the history instead of only seeing the latest value.</p>
-<p>This is also, more or less, where LakehouseBox started. The first version of the garden ran on Cloudflare: Iceberg tables in R2, a pipeline per table, a small program to receive the weather station's posts, and a virtual machine on Google Cloud only to relay the camera's uploads. It worked, and it was too many pieces for a vegetable bed.</p>
+<p>The measurements were sitting inside the Ecowitt app, which wasn’t going to help an agent very much. I needed somewhere for the data to accumulate, somewhere an agent could query the history instead of only seeing the latest value.</p>
+<p>This is also, more or less, where LakehouseBox started. The first version of the garden ran on Cloudflare: Iceberg tables in R2, a pipeline per table, a small program to receive the weather station’s posts, and a virtual machine on Google Cloud only to relay the camera’s uploads. It worked, and it was too many pieces for a vegetable bed.</p>
 <p>What I wanted was a small lakehouse where data accumulates permanently and where I can simply give an agent access to it, without standing up a warehouse, a database server or a collection of little services around it. That became <a href="https://lakehousebox.com">LakehouseBox</a>. How I built it is another post. The requirement here was simple: a place where my agents could put the data, analyse it, reason over it, look at the pictures, send me an email and adjust the water.</p>
 <p>And I wanted all of it to be sovereign, running on European infrastructure. My garden is going to be sovereign. No one is going to touch my lettuce.</p>
 <div class="ask">
@@ -150,32 +303,37 @@ lhbox sink create --catalog garden --table garden.sensor_readings --name weather
   --device --preset ecowitt --strip PASSKEY</code></pre>
 </div>
 
+<div class="split phone-l">
+<div class="text">
+
 <p>A device sink is a private address that turns each post into rows of a table. The nice thing about the Ecowitt gateway is that it can post its measurements to a server of your choice, so I pasted the address the agent gave me into the Ecowitt app and pressed Save.</p>
-<figure class="narrow">
-<img src="img/ecowitt-app.webp" alt="The Ecowitt app's Customized upload screen: protocol Ecowitt, host in.lakehousebox.com, a private path hidden, port 80 and an upload interval of 60 seconds." width="620" height="1349" loading="lazy">
+<p>Done.</p>
+</div>
+<figure>
+<a class="zoom" href="img/ecowitt-app.webp" aria-label="Open image full size"><img src="img/ecowitt-app.webp" alt="The Ecowitt app's Customized upload screen: protocol Ecowitt, host in.lakehousebox.com, a private path hidden, port 80 and an upload interval of 60 seconds." width="620" height="1349" loading="lazy"></a>
 <figcaption>The gateway posting straight to LakehouseBox every 60 seconds. The path is private, like a password.</figcaption>
 </figure>
+</div>
 
-<p>Done.</p>
 <p>A minute later soil moisture, temperature, conductivity, rain, wind, solar radiation and everything else were landing in an Apache Iceberg table. The gateway sends 62 rows per post, and when I added four more soil probes there was nothing to change: the new channels simply started arriving. Since 18 September the garden has collected a little over four million readings.</p>
-<figure>
-<img src="img/app-readings.webp" alt="The sensor_readings table in LakehouseBox: 4,134,892 rows stored in 3.22 MB, in 7 data files and 26 snapshots." width="1150" height="290" loading="lazy">
+<figure class="mid shot">
+<a class="zoom" href="img/app-readings.webp" aria-label="Open image full size"><img src="img/app-readings.webp" alt="The sensor_readings table in LakehouseBox: 4,134,892 rows stored in 3.22 MB, in 7 data files and 26 snapshots." width="1150" height="290" loading="lazy"></a>
 <figcaption>Four million readings, and the whole table takes 3.22 MB.</figcaption>
 </figure>
 
-<p>And now this is great, because I don't have to look at any boring dashboards. I can just ask:</p>
+<p>And now this is great, because I don’t have to look at any boring dashboards. I can just ask:</p>
 <ul>
 <li>How has the soil moisture changed over the last 24 hours?</li>
 <li>Which part of the garden dries fastest?</li>
-<li>Did this morning's watering make any difference?</li>
+<li>Did this morning’s watering make any difference?</li>
 <li>Is the lawn getting too much water?</li>
 </ul>
-<figure>
-<img src="img/app-preview.webp" alt="A preview of the sensor_readings table: one row per sensor and metric, with the indoor gateway and the weather station reporting temperature, humidity, pressure, wind, solar radiation and rain at the same minute." width="1433" height="805" loading="lazy">
+<figure class="wide shot">
+<a class="zoom" href="img/app-preview.webp" aria-label="Open image full size"><img src="img/app-preview.webp" alt="A preview of the sensor_readings table: one row per sensor and metric, with the indoor gateway and the weather station reporting temperature, humidity, pressure, wind, solar radiation and rain at the same minute." width="1433" height="805" loading="lazy"></a>
 <figcaption>The raw table: every sensor, every metric, every minute.</figcaption>
 </figure>
 
-<p>That is much more useful to me than another dashboard full of charts. Each of those questions turns into a query over the same tables. "Did this morning's watering reach the soil?", for example, is this:</p>
+<p>That is much more useful to me than another dashboard full of charts. Each of those questions turns into a query over the same tables. “Did this morning’s watering reach the soil?”, for example, is this:</p>
 <pre class="sql"><code>SELECT sensor_id,
        round(avg(metric_value) FILTER (WHERE event_time &lt; TIMESTAMPTZ &#39;2026-10-23 06:00+00&#39;)) AS before_pct,
        round(max(metric_value) FILTER (WHERE event_time &gt;= TIMESTAMPTZ &#39;2026-10-23 06:00+00&#39;)) AS after_pct
@@ -185,27 +343,32 @@ WHERE sensor_type = &#39;soil&#39; AND metric_name = &#39;moisture&#39;
 GROUP BY 1 ORDER BY 1;</code></pre>
 <p>On that morning every lawn probe jumped (one from 29 % to 72 %) except <code>soil-ch5</code>, the dry corner the agent keeps complaining about. I never write that SQL. The agent does.</p>
 <h2 id="but-the-agent-was-still-missing-something">But the agent was still missing something</h2>
-<p>Numbers don't tell you everything. A sensor can tell me the soil is at 31 % moisture. It can't tell me that one of the broccoli plants has collapsed.</p>
-<p>That's what the camera is for: it takes a full-resolution picture of the bed dozens of times a day.</p>
-<p>There was one small problem. The camera is a fairly normal security camera. It doesn't know anything about Iceberg or S3 or agents. It knows FTP.</p>
-<p>And LakehouseBox didn't support FTP.</p>
+<p>Numbers don’t tell you everything. A sensor can tell me the soil is at 31 % moisture. It can’t tell me that one of the broccoli plants has collapsed.</p>
+<p>That’s what the camera is for: it takes a full-resolution picture of the bed dozens of times a day.</p>
+<p>There was one small problem. The camera is a fairly normal security camera. It doesn’t know anything about Iceberg or S3 or agents. It knows FTP.</p>
+<p>And LakehouseBox didn’t support FTP.</p>
 <p>So we added it.</p>
-<p>Not because I had suddenly decided that a lakehouse needed an FTP feature. Because my camera wouldn't send its pictures any other way.</p>
+<p>Not because I had suddenly decided that a lakehouse needed an FTP feature. Because my camera wouldn’t send its pictures any other way.</p>
 <div class="ask">
 <p class="label">What I asked the agent</p>
 
-<p><em>My Reolink camera can upload periodic images over FTPS. I don't want a Raspberry Pi or another server at home. Add a write-only drop box to the garden catalog so the camera can upload directly, and automatically index every image into a table I can query.</em></p>
+<p><em>My Reolink camera can upload periodic images over FTPS. I don’t want a Raspberry Pi or another server at home. Add a write-only drop box to the garden catalog so the camera can upload directly, and automatically index every image into a table I can query.</em></p>
 <pre><code>lhbox catalog uploader create garden --name camera --prefix camera/rlc-510wa-01/ \
   --protocols ftps --save camera.json</code></pre>
 </div>
 
-<figure class="narrow">
-<img src="img/camera-ftps.webp" alt="The camera's FTP settings: server ftp.lakehousebox.com, port 21, a user name, anonymous FTP off and plain unencrypted FTP disabled." width="620" height="1015" loading="lazy">
-<figcaption>The camera uploads straight to the drop box, encrypted. It can write into its own folder and nothing else.</figcaption>
-</figure>
+<div class="split phone-r">
+<div class="text">
 
 <p>It turned out not to be such a strange requirement. Cameras use FTP. Scanners use FTP. Plenty of industrial equipment uses FTP. Many devices know perfectly well how to produce useful data and have absolutely no idea what an S3 API is.</p>
-<p>Now the camera drops a JPEG into LakehouseBox dozens of times a day. The picture stays a picture, a file in the catalog's storage, and a row appears for it in <code>garden.images</code> with the capture time, the file name, the size and the dimensions:</p>
+</div>
+<figure>
+<a class="zoom" href="img/camera-ftps.webp" aria-label="Open image full size"><img src="img/camera-ftps.webp" alt="The camera's FTP settings: server ftp.lakehousebox.com, port 21, a user name, anonymous FTP off and plain unencrypted FTP disabled." width="620" height="1015" loading="lazy"></a>
+<figcaption>The camera uploads straight to the drop box, encrypted. It can write into its own folder and nothing else.</figcaption>
+</figure>
+</div>
+
+<p>Now the camera drops a JPEG into LakehouseBox dozens of times a day. The picture stays a picture, a file in the catalog’s storage, and a row appears for it in <code>garden.images</code> with the capture time, the file name, the size and the dimensions:</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -240,30 +403,33 @@ GROUP BY 1 ORDER BY 1;</code></pre>
 </tr>
 </tbody>
 </table></div>
-<figure>
-<img src="img/app-camera-files.webp" alt="The catalog's Files tab: the camera's folder for 5 November, with a thumbnail, size and time for each photo." width="1150" height="577" loading="lazy">
+<figure class="wide shot">
+<a class="zoom" href="img/app-camera-files.webp" aria-label="Open image full size"><img src="img/app-camera-files.webp" alt="The catalog's Files tab: the camera's folder for 5 November, with a thumbnail, size and time for each photo." width="1150" height="577" loading="lazy"></a>
 <figcaption>The photos stay photos, filed by camera and day.</figcaption>
 </figure>
 
-<p>So the garden now produced telemetry and a visual history, in the same place, and an agent could ask for "the picture closest to yesterday at noon" with one query.</p>
-<figure>
-<img src="img/camera-frame.webp" alt="The camera's view of the raised bed along the wall, with the lawn beside it." width="640" height="480" loading="lazy">
+<p>So the garden now produced telemetry and a visual history, in the same place, and an agent could ask for “the picture closest to yesterday at noon” with one query.</p>
+<figure class="mid">
+<a class="zoom" href="img/camera-frame.webp" aria-label="Open image full size"><img src="img/camera-frame.webp" alt="The camera's view of the raised bed along the wall, with the lawn beside it." width="640" height="480" loading="lazy"></a>
 <figcaption>The garden from the camera: good for growth, watering and visitors.</figcaption>
 </figure>
 
 <h2 id="the-camera-missed-the-important-thing">The camera missed the important thing</h2>
-<p>A few days later something started eating one of the plants. Holes were appearing in the leaves and I suspected snails. The camera had already caught the neighbour's cat at night, so surely if something was attacking the lettuce, it would catch that too.</p>
-<p>It didn't. I went through the camera's history and found nothing useful.</p>
+<p>A few days later something started eating one of the plants. Holes were appearing in the leaves and I suspected snails. The camera had already caught the neighbour’s cat at night, so surely if something was attacking the lettuce, it would catch that too.</p>
+<p>It didn’t. I went through the camera’s history and found nothing useful.</p>
 <p>So I took a few close-ups with my phone and gave those to the agent instead. That changed the diagnosis completely. On the underside of the leaves it spotted fresh dark specks right next to the chewed areas: frass, which is a polite word for caterpillar droppings. The animal itself was still almost impossible to see, but the evidence that something was actively feeding was there.</p>
-<figure class="narrow">
-<img src="img/leaf-closeup.webp" alt="A close-up of a cabbage leaf with chewed holes and small dark droppings next to them." width="700" height="933" loading="lazy">
+<div class="pair stack">
+<div class="row">
+<figure style="--r:.7503">
+<a class="zoom" href="img/leaf-closeup.webp" aria-label="Open image full size"><img src="img/leaf-closeup.webp" alt="A close-up of a cabbage leaf with chewed holes and small dark droppings next to them." width="700" height="933" loading="lazy"></a>
 <figcaption>The close-up that found it: chewed leaves and fresh frass.</figcaption>
 </figure>
-
-<figure>
-<img src="img/camera-crop.webp" alt="A crop of the camera's frame of the same plants: the holes are barely a few pixels." width="1200" height="887" loading="lazy">
+<figure style="--r:1.3529">
+<a class="zoom" href="img/camera-crop.webp" aria-label="Open image full size"><img src="img/camera-crop.webp" alt="A crop of the camera's frame of the same plants: the holes are barely a few pixels." width="1200" height="887" loading="lazy"></a>
 <figcaption>The same plants from the camera, cropped: great for the garden, useless for a 5 mm hole.</figcaption>
 </figure>
+</div>
+</div>
 
 <p>That was a useful failure. The camera is perfectly good for seeing whether a plant has collapsed, whether the soil looks wet or whether a cat has visited. But a tiny hole in a leaf is a few pixels of the full frame. Having a camera is not the same thing as giving the agent the right view of the problem.</p>
 <p>So I changed the agent. Instead of only looking at a few full frames, it now also works with full-resolution crops of the bed and checks the leaves explicitly for holes, chewed margins, frass, eggs, caterpillars, aphids, slug trails, yellowing and mildew. It also compares each crop with the previous days, because damage is a rate, not a state.</p>
@@ -273,11 +439,11 @@ GROUP BY 1 ORDER BY 1;</code></pre>
 <p><em>Judge the plants from the bed crops as a separate pass. Look explicitly for holes, chewed margins, frass, caterpillars, eggs, aphid colonies and slug trails. Compare with previous days before deciding the damage is new.</em></p>
 </div>
 
-<p>This is one of the things I like most about the setup. When the garden surprises me, I don't build another application. I improve the agent's instructions, give it a better view or a better tool, and the next morning the same routine knows how to look for the problem.</p>
+<p>This is one of the things I like most about the setup. When the garden surprises me, I don’t build another application. I improve the agent’s instructions, give it a better view or a better tool, and the next morning the same routine knows how to look for the problem.</p>
 <h2 id="my-agent-wants-to-talk-about-the-weather">My agent wants to talk about the weather</h2>
 <p>Current measurements tell me what the garden is doing. Watering decisions also depend on what is about to happen. If 16 mm of rain is due on Friday, that matters quite a lot when deciding whether to water on Thursday.</p>
 <p>So naturally I added predictive analytics.</p>
-<p>By predictive analytics I mean I read the public weather forecast. But "predictive analytics" sounds much better in an architecture diagram.</p>
+<p>By predictive analytics I mean I read the public weather forecast. But “predictive analytics” sounds much better in an architecture diagram.</p>
 <div class="ask">
 <p class="label">What I asked the agent</p>
 
@@ -287,10 +453,10 @@ GROUP BY 1 ORDER BY 1;</code></pre>
 </div>
 
 <p>Every morning at 05:30 UTC, LakehouseBox runs one DuckDB query that reads the public Open-Meteo forecast for the garden (seven days back and seven ahead, with rain, temperature and evapotranspiration) and commits the result to an Iceberg table. Each run keeps the time the forecast was issued, so I can also see how the forecast changed its mind. Official AEMET observations from a station nearby go into <code>garden.reference_readings</code>, as a check on what actually happened.</p>
-<p>Again, I didn't want another little server whose only job is to wake up, fetch a JSON file and put it somewhere. I just wanted tomorrow's weather to be there when the agent needs it.</p>
+<p>Again, I didn’t want another little server whose only job is to wake up, fetch a JSON file and put it somewhere. I just wanted tomorrow’s weather to be there when the agent needs it.</p>
 <h2 id="i-still-had-to-remember-to-ask">I still had to remember to ask</h2>
 <p>At this point I could ask pretty much anything about the garden. Great. Except I still had to remember to ask.</p>
-<p>And the whole point was that I don't want another system to check every morning.</p>
+<p>And the whole point was that I don’t want another system to check every morning.</p>
 <p>So I registered an agent inside LakehouseBox (hosted agents are in preview) whose entire job is to look after the garden, and scheduled it for 08:45, just after the morning watering, so it can see whether the water reached the soil.</p>
 <div class="ask">
 <p class="label">What I asked the agent</p>
@@ -301,56 +467,66 @@ GROUP BY 1 ORDER BY 1;</code></pre>
   --state-key journal --state-key open_decisions --state-key calibration --prompt @garden_morning.md</code></pre>
 </div>
 
-<figure>
-<img src="img/app-agent.webp" alt="The Garden morning agent in LakehouseBox: daily at 08:45 Madrid time, its instructions, read access to the garden catalog, and its tools: queries, email, memory, writing its log and reading two web addresses." width="1150" height="745" loading="lazy">
+<figure class="wide shot">
+<a class="zoom" href="img/app-agent.webp" aria-label="Open image full size"><img src="img/app-agent.webp" alt="The Garden morning agent in LakehouseBox: daily at 08:45 Madrid time, its instructions, read access to the garden catalog, and its tools: queries, email, memory, writing its log and reading two web addresses." width="1150" height="745" loading="lazy"></a>
 <figcaption>The agent's page: its schedule, its instructions, and the few tools it is allowed to use.</figcaption>
 </figure>
 
 <p>The prompt is its job description. There is no cron server somewhere, no laptop left on and no Python service whose only purpose is to wake a model up. The agent is registered next to the data and runs on its own schedule. It can read the garden catalog, write only its own log, and keeps three notes between runs: a journal, the decisions it is still waiting to check, and the quirks it has learned about each sensor.</p>
 <p>Its first real run was reassuring for another reason. One of my notes still said the watering happened at an old time. The measurements clearly showed the moisture jumping at a different time. The agent noticed the disagreement and trusted the data over the stale instructions.</p>
 <p>That is exactly what I want it to do.</p>
-<p>It also has opinions. My older garden agent, the Claude Code routine that started all this, noticed in early October that three sensors had low batteries and has asked me to replace them every morning since. On 1 November its log entry began: "BATTERIES, 29TH DAY OF ASKING, AND THE FROST DATE HAS MOVED CLOSER."</p>
+<p>It also has opinions. My older garden agent, the Claude Code routine that started all this, noticed in early October that three sensors had low batteries and has asked me to replace them every morning since. On 1 November its log entry began: “BATTERIES, 29TH DAY OF ASKING, AND THE FROST DATE HAS MOVED CLOSER.”</p>
 <p>I have still not replaced the batteries.</p>
 <h2 id="and-i-can-just-talk-to-it">And I can just talk to it</h2>
 <p>The newest thing, and maybe my favourite: I can talk to the agent. There is a box on its page, and it answers from what it remembers and from its recent runs. I can ask it what it knows, reply to something it flagged, or tell it what to do differently. If it thinks its own instructions should change, it proposes the edit, and nothing changes until I press Apply.</p>
 <p>This morning I asked it to be honest.</p>
-<figure>
-<img src="img/app-talk.webp" alt="A conversation with the Garden morning agent. Asked how the vegetable garden is doing, it says one end of the bed is dry at 21 % and ignoring the watering, and asks the owner to fit an emitter there and replace three low batteries." width="1150" height="560" loading="lazy">
+<figure class="wide shot">
+<a class="zoom" href="img/app-talk.webp" aria-label="Open image full size"><img src="img/app-talk.webp" alt="A conversation with the Garden morning agent. Asked how the vegetable garden is doing, it says one end of the bed is dry at 21 % and ignoring the watering, and asks the owner to fit an emitter there and replace three low batteries." width="1150" height="560" loading="lazy"></a>
 <figcaption>I asked how the garden was doing. It asked for the batteries.</figcaption>
 </figure>
 
 <p>It was honest. One end of the bed is dry and needs a dripper, and could I please replace the batteries.</p>
-<h2 id="i-dont-want-a-report-i-want-a-message">I don't want a report. I want a message.</h2>
+<h2 id="i-dont-want-a-report-i-want-a-message">I don’t want a report. I want a message.</h2>
 <p>I discovered very quickly that I do not want an agent-generated analytics report every morning. No twelve charts. No enormous table of minimums and maximums. No dashboard screenshot.</p>
 <p>I want something I can read while having coffee. And this is not a hypothetical example. It is the kind of message I actually get from the garden every morning:</p>
-<figure class="narrow">
-<img src="img/morning-email.webp" alt="An email from the garden_morning agent titled Big rain Friday, stand pat, with four short paragraphs: what happened, what to change, why, and something noticed." width="900" height="1094" loading="lazy">
-<figcaption>A real note from garden_morning on 1 October. It had checked the sensor history and the forecast, decided not to change the watering, and said what it was still watching.</figcaption>
-</figure>
+<div class="split phone-l email">
+<div class="text">
 
 <p>The wording changes with the garden, but the structure is deliberately simple: <strong>what happened</strong> (the watering ran, most probes rose, the lawn is wetter than its target), <strong>what to change</strong> (one zone a minute shorter, the other as it is), <strong>why</strong> (the lawn is saturated and rain is forecast) and <strong>something I noticed</strong> (one probe stays much drier than its neighbours).</p>
-<p>Behind those four paragraphs it queries millions of readings. I don't care. That's its problem.</p>
-<p>I don't want to operate an analytics system for my garden. I want the garden looked after.</p>
+<p>Behind those four paragraphs it queries millions of readings. I don’t care. That’s its problem.</p>
+</div>
+<figure>
+<a class="zoom" href="img/morning-email.webp" aria-label="Open image full size"><img src="img/morning-email.webp" alt="An email from the garden_morning agent titled Big rain Friday, stand pat, with four short paragraphs: what happened, what to change, why, and something noticed." width="900" height="1094" loading="lazy"></a>
+<figcaption>A real note from garden_morning on 1 October. It had checked the sensor history and the forecast, decided not to change the watering, and said what it was still watching.</figcaption>
+</figure>
+</div>
+
+<p>I don’t want to operate an analytics system for my garden. I want the garden looked after.</p>
 <h2 id="and-finally-let-it-water-the-garden">And finally, let it water the garden</h2>
 <p>For a while there was still one annoying human in the loop: me.</p>
-<p>The agent could observe the garden, query its history, check tomorrow's forecast and decide that the lawn should get four minutes instead of five. Then it would email me, and I would open the Rain Bird app and make the change. Or forget to.</p>
+<p>The agent could observe the garden, query its history, check tomorrow’s forecast and decide that the lawn should get four minutes instead of five. Then it would email me, and I would open the Rain Bird app and make the change. Or forget to.</p>
 <p>So I removed that step too. It was harder than it sounds.</p>
-<p>My Rain Bird controller is battery powered, talks Bluetooth to an app, and drives two zones: the lawn's sprinklers and the drip line through the vegetable bed. The plan was to put a small ESP32 board next to it and speak its Bluetooth protocol directly. I spent an evening recording what the app sends and comparing it with an open-source project for a similar controller. Mine speaks a different dialect.</p>
-<figure class="narrow">
-<img src="img/rainbird.webp" alt="The Rain Bird battery-powered Bluetooth irrigation controller." width="460" height="999" loading="lazy">
+<p>My Rain Bird controller is battery powered, talks Bluetooth to an app, and drives two zones: the lawn’s sprinklers and the drip line through the vegetable bed. The plan was to put a small ESP32 board next to it and speak its Bluetooth protocol directly. I spent an evening recording what the app sends and comparing it with an open-source project for a similar controller. Mine speaks a different dialect.</p>
+<div class="split phone-r">
+<div class="text">
+
+<p>So I went for the most absurd option that works. An old Android phone now lives next to the valve box. An automation app on it taps through the official Rain Bird app exactly as I would: it reads the programme, changes a zone’s minutes, presses Save and waits for the controller to sync. The phone answers a tiny web API with three things: read the current programme, change a zone’s minutes or start time, and switch watering off or on. The agent calls that API, with a key it never sees, and the phone takes about two minutes to key the change in.</p>
+</div>
+<figure>
+<a class="zoom" href="img/rainbird.webp" aria-label="Open image full size"><img src="img/rainbird.webp" alt="The Rain Bird battery-powered Bluetooth irrigation controller." width="460" height="999" loading="lazy"></a>
 <figcaption>The Rain Bird controller, kept exactly as it was.</figcaption>
 </figure>
+</div>
 
-<p>So I went for the most absurd option that works. An old Android phone now lives next to the valve box. An automation app on it taps through the official Rain Bird app exactly as I would: it reads the programme, changes a zone's minutes, presses Save and waits for the controller to sync. The phone answers a tiny web API with three things: read the current programme, change a zone's minutes or start time, and switch watering off or on. The agent calls that API, with a key it never sees, and the phone takes about two minutes to key the change in.</p>
-<p>The first end-to-end test moved the lawn's start time to 15:27. At 15:27 the sprinklers came on, and two lawn probes in the catalog went from 53 % to 66 % and from 31 % to 57 %.</p>
+<p>The first end-to-end test moved the lawn’s start time to 15:27. At 15:27 the sprinklers came on, and two lawn probes in the catalog went from 53 % to 66 % and from 31 % to 57 %.</p>
 <div class="ask">
 <p class="label">The rules the agent waters by</p>
 
 <p><em>At most one change per zone per run, and at most 20 % per change. Minutes between 1 and 15. Keep the start time unless I asked. Never switch watering off unless at least 5 mm of rain is forecast for the next 24 hours, and switch it back on when it has passed. Write every change, and what you expect it to do, to the log.</em></p>
 </div>
 
-<p>Today those rules live in the agent's prompt, and the phone only checks that the numbers make sense. That is the part I want to move next: limits like these belong in the thing that opens the valve, not in the instructions of the thing that decides. An agent should get a deliberately boring tool (zone, minutes, stop) whose limits it cannot talk its way around.</p>
-<p>Now the morning agent can decide the lawn is too wet, shorten the next watering, make the change and tell me what it did. The next morning it looks at the soil's response and decides whether the change helped. So far, with the lawn soaked by autumn rain, its most frequent decision has been to do nothing, which is also correct.</p>
+<p>Today those rules live in the agent’s prompt, and the phone only checks that the numbers make sense. That is the part I want to move next: limits like these belong in the thing that opens the valve, not in the instructions of the thing that decides. An agent should get a deliberately boring tool (zone, minutes, stop) whose limits it cannot talk its way around.</p>
+<p>Now the morning agent can decide the lawn is too wet, shorten the next watering, make the change and tell me what it did. The next morning it looks at the soil’s response and decides whether the change helped. So far, with the lawn soaked by autumn rain, its most frequent decision has been to do nothing, which is also correct.</p>
 <p>That closes the loop:</p>
 <ul>
 <li><strong>Observe:</strong> soil probes, the weather station, leaf wetness and the camera.</li>
@@ -359,10 +535,22 @@ GROUP BY 1 ORDER BY 1;</code></pre>
 <li><strong>Act:</strong> the irrigation clock, through the phone next to it.</li>
 <li><strong>Check:</strong> the next morning, observe the result again.</li>
 </ul>
+<figure class="loop" aria-labelledby="loop-cap">
+<ol>
+<li><span class="step">1 · Observe</span><span class="what">Sensors and a camera</span>Eight soil probes, the weather station, the leaf-wetness sensor and the Reolink camera.<span class="how">gateway → HTTP POST every 60 s<br>camera → FTPS upload</span></li>
+<li><span class="step">2 · Store</span><span class="what">The <code>garden</code> catalog</span>Seven Iceberg tables and a folder of photos. The public forecast is added every morning.<span class="how">device sink · drop box<br>forecast sink, 05:30 UTC</span></li>
+<li><span class="step">3 · Think</span><span class="what">The morning agent</span><code>garden_morning</code> queries the history, the forecast and the photos, then writes its decision down and emails me.<span class="how">hosted agent, 08:45 Madrid<br>→ garden.agent_log</span></li>
+<li><span class="step">4 · Act</span><span class="what">An old Android phone</span>Next to the valve box. Its small web API taps through the official Rain Bird app, which sets the controller over Bluetooth: lawn and drip zones.<span class="warn">The watering rules live in the agent's prompt. The phone only checks that the numbers make sense.</span><span class="how">agent → tunnel → phone → app → valves</span></li>
+<li><span class="step">5 · Check</span><span class="what">The next morning</span>The agent reads the soil's response against what it said the change would do.<span class="how">agent_log: decision, expectation, when to check</span></li>
+</ol>
+<div class="back" aria-hidden="true"><svg viewBox="0 0 400 22" preserveAspectRatio="none"><path d="M398 2 V11 H8" fill="none" stroke="#a4c88a" stroke-width="1" vector-effect="non-scaling-stroke"/><path d="M10 6 L2 11 L10 16" fill="none" stroke="#a4c88a" stroke-width="1" vector-effect="non-scaling-stroke"/></svg><span>back to Observe</span></div>
+<figcaption id="loop-cap">The loop as it runs today: observe, store, think, act, check, and observe again.</figcaption>
+</figure>
+
 <h2 id="what-it-is-made-of">What it is made of</h2>
 <p>By the end, the lakehouse itself is pleasantly boring. The garden is seven tables and a folder of photos, in one catalog:</p>
-<figure>
-<img src="img/app-catalog.webp" alt="The garden catalog's overview in LakehouseBox: private, 2.94 GB, in Germany, with four feeds, seven tables and one agent, and the AGENTS.md page that describes the tables." width="1433" height="805" loading="lazy">
+<figure class="wide shot">
+<a class="zoom" href="img/app-catalog.webp" aria-label="Open image full size"><img src="img/app-catalog.webp" alt="The garden catalog's overview in LakehouseBox: private, 2.94 GB, in Germany, with four feeds, seven tables and one agent, and the AGENTS.md page that describes the tables." width="1433" height="805" loading="lazy"></a>
 <figcaption>The garden catalog: four feeds in, seven tables, one agent reading it, and a page that explains the data to any agent that opens it.</figcaption>
 </figure>
 
@@ -398,17 +586,17 @@ GROUP BY 1 ORDER BY 1;</code></pre>
 <tr>
 <td><code>garden.forecast_daily</code></td>
 <td>The public forecast, as issued each morning.</td>
-<td>The "predictive analytics".</td>
+<td>The “predictive analytics”.</td>
 </tr>
 <tr>
 <td><code>garden.reference_readings</code></td>
 <td>Official observations from a nearby AEMET station.</td>
-<td>A check on the garden's own station.</td>
+<td>A check on the garden’s own station.</td>
 </tr>
 <tr>
 <td><code>garden.agent_log</code></td>
 <td>Every observation, decision, expected outcome and check.</td>
-<td>The agents' memory, and their accountability.</td>
+<td>The agents’ memory, and their accountability.</td>
 </tr>
 </tbody>
 </table></div>
@@ -420,12 +608,12 @@ GROUP BY 1 ORDER BY 1;</code></pre>
 <p><strong>The rules engine is being replaced by an agent.</strong> A classic IoT platform gives you a dashboard and a rules engine: if moisture is below 30 %, water for ten minutes. Real decisions are never that simple. Mine weighs eight probes, the forecast, how the soil responded yesterday, what the photos show and what it recommended last week. Nobody writes that rule. An agent can reason through it every morning and explain itself in four paragraphs, and when it is wrong you change a sentence in its job description, not a deployment.</p>
 <p><strong>Agents need history, not just the latest value.</strong> Most device apps show you now. An agent that decides needs to know how this corner behaved after the last three waterings, what the forecast said before the last storm, and whether its own last decision worked. That is analytical data, kept for a long time, and it is exactly what a lakehouse is for. The <code>agent_log</code> table may be the most important one in the garden: every decision is written down with what it was supposed to achieve and when to check, so the next run can check it. An agent that writes down its expectations and grades itself against the data is a very different thing from a chatbot with a thermostat.</p>
 <p><strong>Devices are simple, and the platform has to meet them where they are.</strong> The gateway can make one plain HTTP post. The camera knows FTP. The irrigation controller only talks to its own app. None of them will ever get an Iceberg library, and neither will the industrial scanner, the PLC or the twenty-year-old weather station. The platforms that win IoT will be the ones that accept data the way devices already send it and turn it into tables without anyone running a server in the middle.</p>
-<p><strong>Open formats matter more, not less, with agents.</strong> I have three device makers, each with its own app and its own cloud, and none of them would let an agent query their history together. In open tables, the readings, the photos, the forecast and the agent's decisions sit side by side, readable by any engine and any agent, and they outlive any one vendor.</p>
+<p><strong>Open formats matter more, not less, with agents.</strong> I have three device makers, each with its own app and its own cloud, and none of them would let an agent query their history together. In open tables, the readings, the photos, the forecast and the agent’s decisions sit side by side, readable by any engine and any agent, and they outlive any one vendor.</p>
 <p><strong>The economics changed.</strong> The sensors cost €300. The storage for a year of readings costs close to nothing. The intelligence to read it every morning costs cents. Until recently, a project like this needed a data team or a weekend hobbyist with a lot of patience. Now it needs a few prompts. That opens IoT to the very long tail of places that could never justify it: the small farm, the school greenhouse, the community garden, the building that wants to know why one floor is always cold, the lab with one critical freezer. Each of them is too small for an IoT platform, and big enough for an agent and a lakehouse.</p>
 <p><strong>What is not solved yet.</strong> Three things, all visible in my own garden. Guardrails have to live in the actuator, not the prompt, and mine are not there yet. Devices lose data when the connection drops: my gateway does not retry, so a minute without internet is a minute missing. And the data is personal: the positions of my sensors describe my home, which is why the catalog is private. Even the sovereignty is not complete: the tunnel that lets the agent reach the phone by the valve box still runs through an American service, so my lettuce is only mostly sovereign.</p>
 <h2 id="where-it-is-today">Where it is today</h2>
-<figure>
-<img src="img/camera-today.webp" alt="The raised bed this morning from the camera: the broccoli and cabbage now large, with big blue-green leaves over the drip line." width="1200" height="900" loading="lazy">
+<figure class="full">
+<a class="zoom" href="img/camera-today.webp" aria-label="Open image full size"><img src="img/camera-today.webp" alt="The raised bed this morning from the camera: the broccoli and cabbage now large, with big blue-green leaves over the drip line." width="1200" height="900" loading="lazy"></a>
 <figcaption>And from the camera this morning, 5 November at 10:00, straight out of the catalog.</figcaption>
 </figure>
 
@@ -440,5 +628,19 @@ GROUP BY 1 ORDER BY 1;</code></pre>
 Javier de la Torre. The garden's code is on <a href="https://github.com/jatorre/garden-lake">GitHub</a>; it runs on <a href="https://lakehousebox.com">LakehouseBox</a>.
 </footer>
 </main>
+<dialog class="viewer" aria-label="Image, full size"><button type="button">Close</button><img alt=""></dialog>
+<script>
+(() => {
+  const d = document.querySelector('dialog.viewer'); if (!d || !d.showModal) return;
+  const img = d.querySelector('img');
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a.zoom'); if (!a) return;
+    e.preventDefault(); const src = a.querySelector('img');
+    img.src = a.href; img.alt = src ? src.alt : ''; d.showModal();
+  });
+  d.addEventListener('click', () => d.close());
+  d.addEventListener('close', () => { img.removeAttribute('src'); });
+})();
+</script>
 </body>
 </html>
