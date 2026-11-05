@@ -79,8 +79,6 @@ a:hover { color: var(--accent); text-decoration-color: var(--accent); }
 article { counter-reset: sec; }
 h2 { counter-increment: sec; font-weight: 600; font-size: clamp(28px, 3.4vw, 36px); line-height: 1.15; letter-spacing: -.012em;
   margin: 96px auto 26px; padding-top: 34px; border-top: 1px solid var(--rule); text-wrap: balance; font-variation-settings: "opsz" 48; }
-h2::before { content: counter(sec, decimal-leading-zero) " /"; display: block; font: 500 13px/1 var(--mono);
-  letter-spacing: .06em; color: var(--accent); margin-bottom: 16px; }
 
 /* code */
 code { font: .8em/1 var(--mono); background: var(--code-bg); border: 1px solid #2a2f28; padding: .14em .38em; border-radius: 4px; color: #e6e2d8; }
@@ -157,7 +155,7 @@ header.top + .part { margin-top: 96px; }
 
 /* the loop diagram */
 .loop-list { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-.loop-svg { display: block; width: 100%; height: auto; margin: 0 auto; max-width: var(--wide); }
+.loop-svg { display: block; width: 100%; height: auto; margin: 0 auto; max-width: 900px; }
 .loop-svg .l-step { font: 500 13px var(--mono); letter-spacing: .14em; fill: #a4c88a; }
 .loop-svg .l-desc { font: 15.5px var(--sans); fill: #dcd8ce; }
 .loop-svg .l-tech { font: 12.5px var(--mono); fill: #8a877e; }
@@ -165,7 +163,7 @@ header.top + .part { margin-top: 96px; }
 .loop-svg .l-center { font: italic 500 36px var(--serif); fill: #f0ece3; }
 .loop-svg .l-sub { font: 15px var(--sans); fill: #aca99f; }
 figure.loop > ol, figure.loop > .back { display: none; }
-.loop { margin: 52px auto 60px; }
+.loop { margin: 40px auto 48px; }
 .loop ol { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 28px; counter-reset: step; }
 .loop li { position: relative; margin: 0; padding: 18px 18px 18px; border: 1px solid var(--rule); background: var(--panel); border-radius: 6px;
   font: 13.5px/1.5 var(--sans); color: var(--muted); }
@@ -237,7 +235,7 @@ dialog.viewer button { position: fixed; top: 14px; right: 16px; font: 600 13px/1
 <h1>I gave an agent a lakehouse and control of my garden</h1>
 <p class="dek">Or how to produce a €60 lettuce.</p>
 <p class="byline">Javier de la Torre<span>·</span><time datetime="2026-11-05">5 November 2026</time></p>
-<figure class="pair">
+<figure class="pair stack">
 <div class="row">
 <figure style="--r:.6994"><a class="zoom" href="img/plan.webp" aria-label="Open image full size"><img src="img/plan.webp" alt="The illustrated plan for a three-metre raised vegetable bed (in Spanish): dimensions 300 × 40 × 40 cm, a side section, a shopping list and the assembly steps." width="740" height="1058" fetchpriority="high"></a></figure>
 <figure style="--r:.7502"><a class="zoom" href="img/bed-first.webp" aria-label="Open image full size"><img src="img/bed-first.webp" alt="The real bed, built: a narrow raised bed along a brick wall and a reed fence, planted with young cabbage, broccoli and lettuce over a drip line." width="760" height="1013" fetchpriority="high"></a></figure>
@@ -288,7 +286,6 @@ dialog.viewer button { position: fixed; top: 14px; right: 16px; font: 600 13px/1
 <div class="text">
 
 <p>I am also a map geek, so there was no chance I was going to leave the sensors as “probe 1”, “probe 2” and “somewhere by the fence”. I opened Google Earth and pinned every soil probe, sprinkler, valve box, the weather station and the camera. Those positions went into a table, <code>garden.sensor_placements</code>, next to the readings.</p>
-<p>And yes, the map really is that blurry. Zoom in far enough to find a two-square-metre vegetable bed and Google Earth gives you a handful of pixels. Privacy by smallness.</p>
 </div>
 <figure>
 <a class="zoom" href="img/sensor-map.webp" aria-label="Open image full size"><img src="img/sensor-map.webp" alt="An aerial view of the lawn with pins for each soil probe, sprinkler, the water valves, the camera and the weather station; the raised bed is a thin red outline along the left edge." width="704" height="741" loading="lazy"></a>
@@ -296,6 +293,7 @@ dialog.viewer button { position: fixed; top: 14px; right: 16px; font: 600 13px/1
 </figure>
 </div>
 
+<p>And yes, the map really is that blurry. Zoom in far enough to find a two-square-metre vegetable bed and Google Earth gives you a handful of pixels. Privacy by smallness.</p>
 <p>That immediately makes the questions more interesting. Instead of asking “what is soil-ch6 doing?”, I can ask why the north-west corner of the lawn is always wetter, or which end of the bed dries fastest. Every measurement has a real position, so the agent can reason about the garden in space as well as in time.</p>
 <p>And this is where I become completely unreasonable. There is probably nothing I would enjoy more than a live moisture surface across my own lawn: a little gradient from dry to wet, showing what is happening between the probes. Eight probes are obviously not enough to know the moisture at every centimetre, but they are enough to start seeing patterns, test some interpolation and tell me where the next probe should go. Completely unnecessary. Obviously essential.</p>
 <p>But there was still one big problem. I couldn’t see it.</p>
